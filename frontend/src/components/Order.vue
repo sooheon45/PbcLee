@@ -40,7 +40,7 @@
                     @click="save"
                     v-else
             >
-                Save
+                Order
             </v-btn>
             <v-btn
                     color="deep-purple lighten-2"
@@ -61,6 +61,34 @@
         </v-card-actions>
         <v-card-actions>
             <v-spacer></v-spacer>
+            <v-btn
+                    v-if="!editMode"
+                    color="deep-purple lighten-2"
+                    text
+                    @click="openUpdateStatus"
+            >
+                UpdateStatus
+            </v-btn>
+            <v-dialog v-model="updateStatusDiagram" width="500">
+                <UpdateStatusCommand
+                        @closeDialog="closeUpdateStatus"
+                        @updateStatus="updateStatus"
+                ></UpdateStatusCommand>
+            </v-dialog>
+            <v-btn
+                    v-if="!editMode"
+                    color="deep-purple lighten-2"
+                    text
+                    @click="openOrderCancel"
+            >
+                OrderCancel
+            </v-btn>
+            <v-dialog v-model="orderCancelDiagram" width="500">
+                <OrderCancelCommand
+                        @closeDialog="closeOrderCancel"
+                        @orderCancel="orderCancel"
+                ></OrderCancelCommand>
+            </v-dialog>
         </v-card-actions>
 
         <v-snackbar
@@ -98,6 +126,8 @@
                 timeout: 5000,
                 text: ''
             },
+            updateStatusDiagram: false,
+            orderCancelDiagram: false,
         }),
         computed:{
         },
@@ -192,16 +222,17 @@
             change(){
                 this.$emit('input', this.value);
             },
-            async () {
+            async updateStatus(params) {
                 try {
                     if(!this.offline) {
-                        var temp = await axios.put(axios.fixUrl(this.value._links[''].href))
+                        var temp = await axios.put(axios.fixUrl(this.value._links['updatestatus'].href), params)
                         for(var k in temp.data) {
                             this.value[k]=temp.data[k];
                         }
                     }
 
                     this.editMode = false;
+                    this.closeUpdateStatus();
                 } catch(e) {
                     this.snackbar.status = true
                     if(e.response && e.response.data.message) {
@@ -211,16 +242,23 @@
                     }
                 }
             },
-            async () {
+            openUpdateStatus() {
+                this.updateStatusDiagram = true;
+            },
+            closeUpdateStatus() {
+                this.updateStatusDiagram = false;
+            },
+            async orderCancel(params) {
                 try {
                     if(!this.offline) {
-                        var temp = await axios.put(axios.fixUrl(this.value._links[''].href))
+                        var temp = await axios.put(axios.fixUrl(this.value._links['ordercancel'].href), params)
                         for(var k in temp.data) {
                             this.value[k]=temp.data[k];
                         }
                     }
 
                     this.editMode = false;
+                    this.closeOrderCancel();
                 } catch(e) {
                     this.snackbar.status = true
                     if(e.response && e.response.data.message) {
@@ -229,6 +267,12 @@
                         this.snackbar.text = e
                     }
                 }
+            },
+            openOrderCancel() {
+                this.orderCancelDiagram = true;
+            },
+            closeOrderCancel() {
+                this.orderCancelDiagram = false;
             },
             async () {
                 try {

@@ -35,4 +35,24 @@ public class Order {
     public static ApplicationContext applicationContext() {
         return OrderApplication.applicationContext;
     }
+
+    public void updateStatus(UpdateStatusCommand updateStatusCommand) {
+        // implement the business logics here:
+
+        OrderCompleted orderCompleted = new OrderCompleted(this);
+        orderCompleted.setId(updateStatusCommand.getId());
+        /** Logic **/
+
+        orderCompleted.publishAfterCommit();
+    }
+
+    public void orderCancel(OrderCancelCommand orderCancelCommand) {
+        // implement the business logics here:
+
+        OrderCanceled orderCanceled = new OrderCanceled(this);
+        orderCanceled.setId(orderCancelCommand.getId());
+        /** Logic **/
+
+        orderCanceled.publishAfterCommit();
+    }
 }

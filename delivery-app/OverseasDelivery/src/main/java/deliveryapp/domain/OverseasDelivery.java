@@ -25,6 +25,9 @@ public class OverseasDelivery {
 
     private Long orderId;
 
+    @PostPersist
+    public void onPostPersist() {}
+
     public static OverseasDeliveryRepository repository() {
         OverseasDeliveryRepository overseasDeliveryRepository = OverseasDeliveryApplication.applicationContext.getBean(
             OverseasDeliveryRepository.class

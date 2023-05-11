@@ -29,4 +29,14 @@ public class Storage {
     public static ApplicationContext applicationContext() {
         return StorageApplication.applicationContext;
     }
+
+    public void decreaseStock(DecreaseStockCommand decreaseStockCommand) {
+        // implement the business logics here:
+
+        StockDecreased stockDecreased = new StockDecreased(this);
+        stockDecreased.setOrderId(decreaseStockCommand.getOrderId());
+        /** Logic **/
+
+        stockDecreased.publishAfterCommit();
+    }
 }

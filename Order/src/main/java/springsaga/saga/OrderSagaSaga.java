@@ -21,7 +21,7 @@ public class OrderSagaSaga {
     FactoryService factoryService;
 
     @Autowired
-    Service Service;
+    OrderService orderService;
 
     @Autowired
     OverseasDeliveryService overseasDeliveryService;
@@ -51,7 +51,7 @@ public class OrderSagaSaga {
             /* Logic */
             orderCancelCommand.setId(event.getId());
 
-            Service.orderCancel(event.getId(), orderCancelCommand);
+            orderService.orderCancel(event.getId(), orderCancelCommand);
         }
 
         // Manual Offset Commit //
@@ -111,7 +111,7 @@ public class OrderSagaSaga {
         /* Logic */
         updateStatusCommand.setId(event.get());
 
-        Service.updateStatus(event.get(), updateStatusCommand);
+        orderService.updateStatus(event.get(), updateStatusCommand);
 
         // Manual Offset Commit //
         acknowledgment.acknowledge();

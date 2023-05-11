@@ -21,10 +21,18 @@ public class Factory {
 
     private Integer name;
 
+    @PostPersist
+    public void onPostPersist() {}
+
     public static FactoryRepository repository() {
         FactoryRepository factoryRepository = FactoryApplication.applicationContext.getBean(
             FactoryRepository.class
         );
         return factoryRepository;
+    }
+
+    public void recallProduct(RecallProductCommand recallProductCommand) {
+        ProductRecalled productRecalled = new ProductRecalled(this);
+        productRecalled.publishAfterCommit();
     }
 }

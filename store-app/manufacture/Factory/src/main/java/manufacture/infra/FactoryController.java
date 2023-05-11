@@ -17,4 +17,26 @@ public class FactoryController {
 
     @Autowired
     FactoryRepository factoryRepository;
+
+    @RequestMapping(
+        value = "factories/{id}/recall",
+        method = RequestMethod.PUT,
+        produces = "application/json;charset=UTF-8"
+    )
+    public Factory recallProduct(
+        @PathVariable(value = "id") Long id,
+        @RequestBody RecallProductCommand recallProductCommand,
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws Exception {
+        System.out.println("##### /factory/recallProduct  called #####");
+        Optional<Factory> optionalFactory = factoryRepository.findById(id);
+
+        optionalFactory.orElseThrow(() -> new Exception("No Entity Found"));
+        Factory factory = optionalFactory.get();
+        factory.recallProduct(recallProductCommand);
+
+        factoryRepository.save(factory);
+        return factory;
+    }
 }

@@ -17,4 +17,26 @@ public class StorageController {
 
     @Autowired
     StorageRepository storageRepository;
+
+    @RequestMapping(
+        value = "storages/{id}/decreasestock",
+        method = RequestMethod.PUT,
+        produces = "application/json;charset=UTF-8"
+    )
+    public Storage decreaseStock(
+        @PathVariable(value = "id") Long id,
+        @RequestBody DecreaseStockCommand decreaseStockCommand,
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) throws Exception {
+        System.out.println("##### /storage/decreaseStock  called #####");
+        Optional<Storage> optionalStorage = storageRepository.findById(id);
+
+        optionalStorage.orElseThrow(() -> new Exception("No Entity Found"));
+        Storage storage = optionalStorage.get();
+        storage.decreaseStock(decreaseStockCommand);
+
+        storageRepository.save(storage);
+        return storage;
+    }
 }

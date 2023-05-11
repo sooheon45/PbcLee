@@ -12,6 +12,12 @@ public class FactoryHateoasProcessor
 
     @Override
     public EntityModel<Factory> process(EntityModel<Factory> model) {
+        model.add(
+            Link
+                .of(model.getRequiredLink("self").getHref() + "/recall")
+                .withRel("recall")
+        );
+
         return model;
     }
 }

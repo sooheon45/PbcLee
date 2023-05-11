@@ -39,7 +39,7 @@
                     @click="save"
                     v-else
             >
-                Save
+                StartDelivery
             </v-btn>
             <v-btn
                     color="deep-purple lighten-2"
@@ -60,6 +60,34 @@
         </v-card-actions>
         <v-card-actions>
             <v-spacer></v-spacer>
+            <v-btn
+                    v-if="!editMode"
+                    color="deep-purple lighten-2"
+                    text
+                    @click="openCancelDelivery"
+            >
+                CancelDelivery
+            </v-btn>
+            <v-dialog v-model="cancelDeliveryDiagram" width="500">
+                <CancelDeliveryCommand
+                        @closeDialog="closeCancelDelivery"
+                        @cancelDelivery="cancelDelivery"
+                ></CancelDeliveryCommand>
+            </v-dialog>
+            <v-btn
+                    v-if="!editMode"
+                    color="deep-purple lighten-2"
+                    text
+                    @click="openReturnDelivery"
+            >
+                ReturnDelivery
+            </v-btn>
+            <v-dialog v-model="returnDeliveryDiagram" width="500">
+                <ReturnDeliveryCommand
+                        @closeDialog="closeReturnDelivery"
+                        @returnDelivery="returnDelivery"
+                ></ReturnDeliveryCommand>
+            </v-dialog>
         </v-card-actions>
 
         <v-snackbar
@@ -97,6 +125,8 @@
                 timeout: 5000,
                 text: ''
             },
+            cancelDeliveryDiagram: false,
+            returnDeliveryDiagram: false,
         }),
         computed:{
         },
@@ -191,16 +221,17 @@
             change(){
                 this.$emit('input', this.value);
             },
-            async () {
+            async cancelDelivery(params) {
                 try {
                     if(!this.offline) {
-                        var temp = await axios.put(axios.fixUrl(this.value._links[''].href))
+                        var temp = await axios.put(axios.fixUrl(this.value._links['canceldelivery'].href), params)
                         for(var k in temp.data) {
                             this.value[k]=temp.data[k];
                         }
                     }
 
                     this.editMode = false;
+                    this.closeCancelDelivery();
                 } catch(e) {
                     this.snackbar.status = true
                     if(e.response && e.response.data.message) {
@@ -210,16 +241,23 @@
                     }
                 }
             },
-            async () {
+            openCancelDelivery() {
+                this.cancelDeliveryDiagram = true;
+            },
+            closeCancelDelivery() {
+                this.cancelDeliveryDiagram = false;
+            },
+            async returnDelivery(params) {
                 try {
                     if(!this.offline) {
-                        var temp = await axios.put(axios.fixUrl(this.value._links[''].href))
+                        var temp = await axios.put(axios.fixUrl(this.value._links['returndelivery'].href), params)
                         for(var k in temp.data) {
                             this.value[k]=temp.data[k];
                         }
                     }
 
                     this.editMode = false;
+                    this.closeReturnDelivery();
                 } catch(e) {
                     this.snackbar.status = true
                     if(e.response && e.response.data.message) {
@@ -228,6 +266,12 @@
                         this.snackbar.text = e
                     }
                 }
+            },
+            openReturnDelivery() {
+                this.returnDeliveryDiagram = true;
+            },
+            closeReturnDelivery() {
+                this.returnDeliveryDiagram = false;
             },
         },
     }

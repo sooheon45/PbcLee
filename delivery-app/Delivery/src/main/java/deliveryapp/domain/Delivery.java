@@ -33,4 +33,24 @@ public class Delivery {
     public static ApplicationContext applicationContext() {
         return DeliveryApplication.applicationContext;
     }
+
+    public void cancelDelivery(CancelDeliveryCommand cancelDeliveryCommand) {
+        // implement the business logics here:
+
+        DeliveryCanceled deliveryCanceled = new DeliveryCanceled(this);
+        deliveryCanceled.setOrderId(cancelDeliveryCommand.getOrderId());
+        /** Logic **/
+
+        deliveryCanceled.publishAfterCommit();
+    }
+
+    public void returnDelivery(ReturnDeliveryCommand returnDeliveryCommand) {
+        // implement the business logics here:
+
+        DeliveryReturned deliveryReturned = new DeliveryReturned(this);
+        deliveryReturned.setOrderId(returnDeliveryCommand.getOrderId());
+        /** Logic **/
+
+        deliveryReturned.publishAfterCommit();
+    }
 }

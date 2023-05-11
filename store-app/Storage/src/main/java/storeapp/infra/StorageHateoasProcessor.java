@@ -12,6 +12,12 @@ public class StorageHateoasProcessor
 
     @Override
     public EntityModel<Storage> process(EntityModel<Storage> model) {
+        model.add(
+            Link
+                .of(model.getRequiredLink("self").getHref() + "/decreasestock")
+                .withRel("decreasestock")
+        );
+
         return model;
     }
 }
